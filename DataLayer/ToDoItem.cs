@@ -1,4 +1,5 @@
-﻿using ToDoLib;
+﻿using System;
+using ToDoLib;
 
 namespace DataLayer
 {
@@ -9,6 +10,8 @@ namespace DataLayer
         public bool IsCompleted { get; set; }
         public bool IsDeleted { get; set; }
         public int ToDoItemOrder { get; set; }
+        public DateTime Created { get; set; }
+        public DateTime Updated { get; set; }
 
         public ToDoItemNote ToDoItemNote { get; set; }
     }

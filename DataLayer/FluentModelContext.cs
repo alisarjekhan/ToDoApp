@@ -38,9 +38,11 @@ namespace DataLayer
 
         public static BackendConfiguration GetBackendConfiguration()
         {
-            BackendConfiguration backend = new BackendConfiguration();
-            backend.Backend = "MsSql";
-            backend.ProviderName = "System.Data.SqlClient";
+            BackendConfiguration backend = new BackendConfiguration
+            {
+                Backend = "MsSql",
+                ProviderName = "System.Data.SqlClient"
+            };
 
             return backend;
         }

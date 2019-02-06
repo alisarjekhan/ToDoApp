@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using DataLayer;
+using log4net;
 using System;
 using System.Collections.Generic;
 using System.Web.Http;
@@ -10,6 +11,8 @@ namespace ToDoApp.Controllers
     [RoutePrefix("api/ToDoItems")]
     public class ToDoItemsController : ApiController
     {
+        static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
         IToDoRepoService _repoService; 
         public ToDoItemsController(IToDoRepoService repoService)
         {
@@ -31,6 +34,7 @@ namespace ToDoApp.Controllers
             }
             catch (Exception ex)
             {
+                log.Error($"Error while executing {nameof(this.GetAllToDoItems)}", ex);
                 return InternalServerError(ex);
             }
         }
@@ -52,6 +56,7 @@ namespace ToDoApp.Controllers
             }
             catch(Exception ex)
             {
+                log.Error($"Error while executing {nameof(this.GetAllToDoItems)}", ex);
                 return InternalServerError(ex);
             }
         }
@@ -75,6 +80,7 @@ namespace ToDoApp.Controllers
             }
             catch(Exception ex)
             {
+                log.Error($"Error while executing {nameof(this.GetAllToDoItems)}", ex);
                 return InternalServerError(ex);
             }
         }
@@ -97,6 +103,7 @@ namespace ToDoApp.Controllers
             }
             catch(Exception ex)
             {
+                log.Error($"Error while executing {nameof(this.GetAllToDoItems)}", ex);
                 return InternalServerError(ex);
             }
         }
@@ -124,6 +131,7 @@ namespace ToDoApp.Controllers
             }
             catch (Exception ex)
             {
+                log.Error($"Error while executing {nameof(this.GetAllToDoItems)}", ex);
                 return InternalServerError(ex);
             }
         }
@@ -141,6 +149,7 @@ namespace ToDoApp.Controllers
             }
             catch (Exception ex)
             {
+                log.Error($"Error while executing {nameof(this.GetAllToDoItems)}", ex);
                 return InternalServerError(ex);
             }
         }
@@ -158,6 +167,7 @@ namespace ToDoApp.Controllers
             }
             catch (Exception ex)
             {
+                log.Error($"Error while executing {nameof(this.GetAllToDoItems)}", ex);
                 return InternalServerError(ex);
             }
         }
@@ -187,6 +197,7 @@ namespace ToDoApp.Controllers
             }
             catch (Exception ex)
             {
+                log.Error($"Error while executing {nameof(this.GetAllToDoItems)}", ex);
                 return InternalServerError(ex);
             }
         }
@@ -205,6 +216,7 @@ namespace ToDoApp.Controllers
             }
             catch (Exception ex)
             {
+                log.Error($"Error while executing {nameof(this.GetAllToDoItems)}", ex);
                 return InternalServerError(ex);
             }
         }
@@ -230,6 +242,7 @@ namespace ToDoApp.Controllers
             }
             catch (Exception ex)
             {
+                log.Error($"Error while executing {nameof(this.GetAllToDoItems)}", ex);
                 return InternalServerError(ex);
             }
         }
