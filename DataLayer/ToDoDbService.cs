@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Telerik.OpenAccess;
 using ToDoLib;
@@ -10,14 +11,6 @@ namespace DataLayer
         public ToDoDbService()
         {
             UpdateDatabase();
-        }
-
-        public IList<ToDoItem> GetToDoItems()
-        {
-            using (var context = new FluentModelContext())
-            {
-                return context.ToDoItems.Where(t => !t.IsDeleted).ToList();
-            }
         }
 
         private static void UpdateDatabase()
@@ -48,6 +41,14 @@ namespace DataLayer
             }
         }
 
+        public IList<ToDoItem> GetToDoItems()
+        {
+            using (var context = new FluentModelContext())
+            {
+                return context.ToDoItems.Where(t => !t.IsDeleted).ToList();
+            }
+        }
+
         public ToDoItem GetToDoItem(int id)
         {
             using (var context = new FluentModelContext())
@@ -60,6 +61,9 @@ namespace DataLayer
         {
             using (var context = new FluentModelContext())
             {
+                toDoItem.Created = DateTime.Now;
+                toDoItem.Updated = DateTime.Now;
+
                 context.Add(toDoItem);
                 context.SaveChanges();
             }
@@ -69,26 +73,7 @@ namespace DataLayer
         {
             using (var context = new FluentModelContext())
             {
-                var toDoItemFromDb = context.ToDoItems.FirstOrDefault(t => t.ToDoItemId == toDoItem.ToDoItemId);
-
-                if (toDoItemFromDb == null || toDoItemFromDb.IsDeleted)
-                {
-                    return false;
-                }
-                
-                toDoItemFromDb.ToDoDescription = toDoItem.ToDoDescription;
-                toDoItemFromDb.IsCompleted = toDoItem.IsCompleted;
-                toDoItemFromDb.IsDeleted = toDoItem.IsDeleted;
-                toDoItemFromDb.ToDoItemOrder = toDoItem.ToDoItemOrder;
-
-                //if (toDoItem.ToDoItemNote != null)
-                //{
-                //    toDoItemFromDb.ToDoItemNote.ToDoItemId = toDoItem.ToDoItemNote.ToDoItemId;
-                //    toDoItemFromDb.ToDoItemNote.Note = toDoItem.ToDoItemNote.Note;
-                //}
-                context.SaveChanges();
-
-                return true;
+                return CheckAndUpdateToDoItem(toDoItem, context);
             }
         }
 
@@ -96,26 +81,15 @@ namespace DataLayer
         {
             using (var context = new FluentModelContext())
             {
-                var isAnyToDoMissing = false;
+                bool isAnyToDoMissing = false;
+
                 toDoItems.ForEach(toDoItem => 
                 {
-                    var toDoItemFromDb = context.ToDoItems.FirstOrDefault(t => toDoItem.ToDoItemId == t.ToDoItemId);
-                    if (toDoItemFromDb == null || toDoItemFromDb.IsDeleted)
-                    {
-                        isAnyToDoMissing = true;
+                    isAnyToDoMissing = CheckAndUpdateToDoItem(toDoItem, context);
+
+                    //Update All OR None
+                    if (isAnyToDoMissing)
                         return;
-                    }
-
-                    toDoItemFromDb.ToDoDescription = toDoItem.ToDoDescription;
-                    toDoItemFromDb.IsCompleted = toDoItem.IsCompleted;
-                    toDoItemFromDb.IsDeleted = toDoItem.IsDeleted;
-                    toDoItemFromDb.ToDoItemOrder = toDoItem.ToDoItemOrder;
-
-                    //if (toDoItem.ToDoItemNote != null)
-                    //{
-                    //    toDoItemFromDb.ToDoItemNote.ToDoItemId = toDoItem.ToDoItemNote.ToDoItemId;
-                    //    toDoItemFromDb.ToDoItemNote.Note = toDoItem.ToDoItemNote.Note;
-                    //}
                 });
 
                 if (isAnyToDoMissing)
@@ -125,6 +99,26 @@ namespace DataLayer
 
                 return true;
             }
+        }
+
+        private bool CheckAndUpdateToDoItem(ToDoItem toDoItem, FluentModelContext context)
+        {
+            var toDoItemFromDb = context.ToDoItems.FirstOrDefault(t => t.ToDoItemId == toDoItem.ToDoItemId);
+
+            if (toDoItemFromDb == null || toDoItemFromDb.IsDeleted)
+            {
+                return false;
+            }
+
+            toDoItemFromDb.ToDoDescription = toDoItem.ToDoDescription;
+            toDoItemFromDb.IsCompleted = toDoItem.IsCompleted;
+            toDoItemFromDb.IsDeleted = toDoItem.IsDeleted;
+            toDoItemFromDb.ToDoItemOrder = toDoItem.ToDoItemOrder;
+            toDoItem.Updated = DateTime.Now;
+
+            context.SaveChanges();
+
+            return true;
         }
 
         public bool DeleteToDoItem(int toDoItemId)
@@ -138,6 +132,7 @@ namespace DataLayer
                     return false;
                 }
 
+                toDoItemFromDb.Updated = DateTime.Now;
                 toDoItemFromDb.IsDeleted = true;
 
                 if (toDoItemFromDb.ToDoItemNote != null)

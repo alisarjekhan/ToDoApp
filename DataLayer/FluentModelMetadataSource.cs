@@ -18,6 +18,8 @@ namespace DataLayer
                 t.ToDoDescription,
                 t.IsCompleted,
                 t.ToDoItemOrder,
+                t.Created,
+                t.Updated,
                 t.IsDeleted
             }).ToTable("ToDoItem");
             toDoItemConfiguration.HasProperty(p => p.ToDoItemId).IsIdentity(KeyGenerator.Autoinc);
