@@ -57,12 +57,16 @@ namespace ToDoApp.Controllers
         }
 
         [Route("")]
+        [Authorize]//(Roles = "admin")]
         public IHttpActionResult PostNewToDoItem([FromBody]ToDoItemDto todoItemDto)
         {
             try
             {
                 if (!ModelState.IsValid)
                     return BadRequest("Invalid Data");
+
+                if (!User.IsInRole("admin"))
+                    return Unauthorized();
 
                 var toDoItem = Mapper.Map<ToDoItem>(todoItemDto);
                 _repoService.AddToDoItem(toDoItem);
@@ -76,6 +80,7 @@ namespace ToDoApp.Controllers
         }
 
         [Route("{toDoItemId:int}")]
+        [Authorize]
         public IHttpActionResult PutToDoItem(int toDoItemId, [FromBody]ToDoItemDto todoItemDto)
         {
             try
@@ -97,6 +102,7 @@ namespace ToDoApp.Controllers
         }
 
         [Route("")]
+        [Authorize]
         public IHttpActionResult PutToDoItems([FromBody] ToDoItemDto[] toDoItemDtos)
         {
             try
@@ -123,6 +129,7 @@ namespace ToDoApp.Controllers
         }
 
         [Route("{toDoItemId:int}")]
+        [Authorize]
         public IHttpActionResult DeleteToDoItem(int toDoItemId)
         {
             try
@@ -139,6 +146,7 @@ namespace ToDoApp.Controllers
         }
 
         [Route("{toDoItemId:int}/note")]
+        [Authorize]
         public IHttpActionResult DeleteNoteForToDoItem(int toDoItemId)
         {
             try
@@ -155,12 +163,16 @@ namespace ToDoApp.Controllers
         }
 
         [Route("{toDoItemId:int}/note")]
+        [Authorize]
         public IHttpActionResult PostNoteToDoItem(int toDoItemId, [FromBody] string note)
         {
             try
             {
                 if (!ModelState.IsValid)
                     return BadRequest("Invalid Data");
+
+                if (!User.IsInRole("admin"))
+                    return Unauthorized();
 
                 var toDoItem = _repoService.GetToDoItem(toDoItemId);
 
@@ -198,6 +210,7 @@ namespace ToDoApp.Controllers
         }
 
         [Route("{toDoItemId:int}/note")]
+        [Authorize]
         public IHttpActionResult PutNoteForToDoItem(int toDoItemId, [FromBody]string note)
         {
             try
