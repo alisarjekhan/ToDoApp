@@ -10,14 +10,13 @@
     <div class="container">
         <div class="row">
             <div class="col-sm-6">
-                <h2>Todo List</h2>
-                <table id="todoTable" class="table table-bordered table-condensed table-striped">
+                <h2 style="text-align:center">Todo List</h2>
+                <table id="todoTable" class="table table-bordered table-condensed table-striped" align="center" border="1" >
                     <thead>
                         <tr>
-                            <th>Todo</th>
-                            <th>Completed</th>
-                            <th>Has Note</th>
-                           
+                            <th width="100">Todo</th>
+                            <th width="100">Completed</th>
+                            <th width="100">Has Note</th>
                         </tr>
                     </thead>
                 </table>
@@ -27,7 +26,7 @@
 
     <script>
         $(document).ready(function () {
-            todoList();
+            todoList(); //Load Todo list as soon as page loads
         });
 
         function todoList() {
@@ -46,7 +45,7 @@
         }
 
         function todoListSuccess(toDoItems) {
-            $.each(toDoItems, function (index, todoItem) {
+            $.each(toDoItems, function (index, todoItem) {  // Add row in UI table for each todo item
                 todoItemAddRow(todoItem);
             })
         }
@@ -57,21 +56,21 @@
             }
 
             $("#todoTable tbody").append(
-                todoItemBuildTableRow(todoItem));
+                todoItemBuildTableRow(todoItem)); // Build row for todo item to be added to UI table
         }
 
         function todoItemBuildTableRow(todoItem) {
             var ret =
                 "<tr>" +
-                "<td>" + todoItem.ToDoDescription + "</td>" +
-                //"<td>" + todoItem.IsCompleted + "</td>"
-                //+ "<td>" + "<input type='checkbox' checked='" + todoItem.IsCompleted + "' disabled='disabled' />" + "</td>" +
-                //+ "<td>" + "<input type='checkbox' " + todoItem.HasNote ? "checked='checked'" : "checked=''"+ " disabled='disabled' />" + "</td>" +
-                //+ "<td>" + todoItem.HasNote + "</td>" +
-                  "<td>" + "<input type='checkbox' " + (todoItem.IsCompleted ? "checked='checked'" : "") + " disabled='disabled' />" + "</td>"
-                + "<td>" + "<input type='checkbox' " + (todoItem.HasNote ? "checked='checked'" : "") + " disabled='disabled' />" + "</td>" +
-
+                    "<td align='center'>" + todoItem.ToDoDescription + "</td>" +
+                    "<td align='center'>" +
+                        "<input type='checkbox' " + (todoItem.IsCompleted ? "checked='checked'" : "") + " disabled='disabled' />" +
+                    "</td>" +
+                    "<td align='center'>" +
+                        "<input type='checkbox' " + (todoItem.HasNote ? "checked='checked'" : "") + " disabled='disabled' />" +
+                    "</td>" +
                 "</tr>";
+
             return ret;
         }
 
