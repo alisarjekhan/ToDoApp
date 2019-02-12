@@ -27,14 +27,19 @@ namespace ToDoApp.Controllers
                 var allToDoItemsFromDB = _repoService.GetToDoItems();
 
                 if (allToDoItemsFromDB.Count == 0)
+                {
+                    log.Info($"No todo items retrieved");
                     return NotFound();
+                }
 
                 var allToDoItemDtos = Mapper.Map<IList<ToDoItemDto>>(allToDoItemsFromDB);
+                log.Info($"Total todo items retrieved - {allToDoItemDtos.Count}");
+
                 return Ok(allToDoItemDtos);
             }
             catch (Exception ex)
             {
-                log.Error($"Error while executing {nameof(this.GetAllToDoItems)}", ex);
+                log.Error($"Error while getting list of Todo items", ex);
                 return InternalServerError(ex);
             }
         }
@@ -47,20 +52,23 @@ namespace ToDoApp.Controllers
                 var toDoItemFromDB = _repoService.GetToDoItem(toDoItemId);
 
                 if (toDoItemFromDB == null || toDoItemFromDB.IsDeleted)
+                {
+                    log.Info($"Todo item id-{toDoItemId} not found");
                     return NotFound();
+                }
 
                 var toDoItemDto = Mapper.Map<ToDoItemDto>(toDoItemFromDB);
 
                 return Ok(toDoItemDto);
-
             }
             catch(Exception ex)
             {
-                log.Error($"Error while executing {nameof(this.GetAllToDoItems)}", ex);
+                log.Error($"Error while getting todo item id - {toDoItemId}", ex);
                 return InternalServerError(ex);
             }
         }
 
+        string _invalidDataErrorMsg = "Invalid data";
         [Route("")]
         [Authorize]//(Roles = "admin")]
         public IHttpActionResult PostNewToDoItem([FromBody]ToDoItemDto todoItemDto)
@@ -68,19 +76,28 @@ namespace ToDoApp.Controllers
             try
             {
                 if (!ModelState.IsValid)
-                    return BadRequest("Invalid Data");
+                {
+                    log.Error(_invalidDataErrorMsg);
+                    return BadRequest(_invalidDataErrorMsg);
+                }
 
                 if (!User.IsInRole("admin"))
+                {
+                    log.Warn($"User {User.Identity.Name} is not authorized to add new todo item");
                     return Unauthorized();
+                }
 
                 var toDoItem = Mapper.Map<ToDoItem>(todoItemDto);
                 _repoService.AddToDoItem(toDoItem);
                 todoItemDto.ToDoItemId = toDoItem.ToDoItemId;
+
+                log.Info($"Todo item created with id - {toDoItem.ToDoItemId}");
+
                 return Created($"{Request.RequestUri}/{todoItemDto.ToDoItemId}", todoItemDto);
             }
             catch(Exception ex)
             {
-                log.Error($"Error while executing {nameof(this.GetAllToDoItems)}", ex);
+                log.Error($"Error while adding new todo item", ex);
                 return InternalServerError(ex);
             }
         }
@@ -92,18 +109,26 @@ namespace ToDoApp.Controllers
             try
             {
                 if (!ModelState.IsValid)
-                    return BadRequest("Invalid Data");
+                {
+                    log.Error(_invalidDataErrorMsg);
+                    return BadRequest(_invalidDataErrorMsg);
+                }
 
                 var toDoItem = Mapper.Map<ToDoItem>(todoItemDto);
 
                 if (!_repoService.UpdateToDoItem(toDoItem))
+                {
+                    log.Warn($"Todo item id - {toDoItemId} not found");
                     return NotFound();
+                }
+
+                log.Info($"Todo item id - {toDoItemId} successfully updated");
 
                 return Ok();
             }
             catch(Exception ex)
             {
-                log.Error($"Error while executing {nameof(this.GetAllToDoItems)}", ex);
+                log.Error($"Error while updating todo item {todoItemDto.ToDoItemId}", ex);
                 return InternalServerError(ex);
             }
         }
@@ -115,7 +140,10 @@ namespace ToDoApp.Controllers
             try
             {
                 if (!ModelState.IsValid || toDoItemDtos == null || toDoItemDtos.Length == 0)
-                    return BadRequest("Invalid Data");
+                {
+                    log.Error(_invalidDataErrorMsg);
+                    return BadRequest(_invalidDataErrorMsg);
+                }
 
 
                 var toDoItems = new List<ToDoItem>();
@@ -125,13 +153,18 @@ namespace ToDoApp.Controllers
                 }
 
                 if (!_repoService.UpdateToDoItems(toDoItems))
+                {
+                    log.Warn($"Could not update as one or more todo items are missing in the database");
                     return NotFound();
+                }
+
+                log.Info($"Todo items successfully updated");
 
                 return Ok();
             }
             catch (Exception ex)
             {
-                log.Error($"Error while executing {nameof(this.GetAllToDoItems)}", ex);
+                log.Error($"Error while updating todo items", ex);
                 return InternalServerError(ex);
             }
         }
@@ -143,7 +176,12 @@ namespace ToDoApp.Controllers
             try
             {
                 if (!_repoService.DeleteToDoItem(toDoItemId))
+                {
+                    log.Warn($"Todo item id - {toDoItemId} not found");
                     return NotFound();
+                }
+
+                log.Info($"Todo item id - {toDoItemId} successfully deleted");
 
                 return Ok();
             }
@@ -179,10 +217,16 @@ namespace ToDoApp.Controllers
             try
             {
                 if (!ModelState.IsValid)
-                    return BadRequest("Invalid Data");
+                {
+                    log.Error(_invalidDataErrorMsg);
+                    return BadRequest(_invalidDataErrorMsg);
+                }
 
                 if (!User.IsInRole("admin"))
+                {
+                    log.Warn($"User {User.Identity.Name} is not authorized to add note");
                     return Unauthorized();
+                }
 
                 var toDoItem = _repoService.GetToDoItem(toDoItemId);
 
@@ -197,7 +241,7 @@ namespace ToDoApp.Controllers
             }
             catch (Exception ex)
             {
-                log.Error($"Error while executing {nameof(this.GetAllToDoItems)}", ex);
+                log.Error($"Error while adding a note for todo item id - {toDoItemId}", ex);
                 return InternalServerError(ex);
             }
         }
@@ -216,7 +260,7 @@ namespace ToDoApp.Controllers
             }
             catch (Exception ex)
             {
-                log.Error($"Error while executing {nameof(this.GetAllToDoItems)}", ex);
+                log.Error($"Error while getting Note for todo item id - {toDoItemId}", ex);
                 return InternalServerError(ex);
             }
         }
@@ -228,7 +272,10 @@ namespace ToDoApp.Controllers
             try
             {
                 if (!ModelState.IsValid)
-                    return BadRequest("Invalid Data");
+                {
+                    log.Error(_invalidDataErrorMsg);
+                    return BadRequest(_invalidDataErrorMsg);
+                }
 
                 var toDoItemFromDB = _repoService.GetToDoItem(toDoItemId);
 
@@ -242,7 +289,7 @@ namespace ToDoApp.Controllers
             }
             catch (Exception ex)
             {
-                log.Error($"Error while executing {nameof(this.GetAllToDoItems)}", ex);
+                log.Error($"Error while updating Note for todo item id - {toDoItemId}", ex);
                 return InternalServerError(ex);
             }
         }
