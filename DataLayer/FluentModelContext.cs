@@ -38,13 +38,38 @@ namespace DataLayer
 
         public static BackendConfiguration GetBackendConfiguration()
         {
-            BackendConfiguration backend = new BackendConfiguration
+            BackendConfiguration fromCodeConfiguration = new BackendConfiguration()
             {
                 Backend = "MsSql",
                 ProviderName = "System.Data.SqlClient"
             };
 
-            return backend;
+            BackendConfiguration.MergeBackendConfigurationFromConfigFile(fromCodeConfiguration,
+                ConfigurationMergeMode.ConfigFileDefinitionWins, "AzureConfiguration");
+            //FluentModel dbContext = new FluentModel(fromCodeConfiguration);
+            //BackendConfiguration backend = new BackendConfiguration();
+            //{
+            //Backend = "MsSql",
+            //ProviderName = "System.Data.SqlClient"
+            //}
+
+            //BackendConfiguration backend = new BackendConfiguration();
+            //backend.Backend = "Azure";
+            //backend.ProviderName = "System.Data.SqlClient";
+
+            //CustomizeBackendConfiguration(ref backend);
+
+            return fromCodeConfiguration;
+        
+
+            //return backend;
+        }
+
+        static void CustomizeBackendConfiguration(ref BackendConfiguration config)
+        {
+            config.Runtime.AllowReadAfterDelete = true;
+            config.SecondLevelCache.Enabled = true;
+            config.SecondLevelCache.NumberOfObjects = 6000;
         }
     }
 }
