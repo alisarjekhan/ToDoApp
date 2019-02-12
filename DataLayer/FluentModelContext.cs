@@ -45,7 +45,7 @@ namespace DataLayer
             };
 
             BackendConfiguration.MergeBackendConfigurationFromConfigFile(fromCodeConfiguration,
-                ConfigurationMergeMode.ConfigFileDefinitionWins, "AzureConfiguration");
+                ConfigurationMergeMode.CompiledConfigurationWins, "AzureConfiguration");
             //FluentModel dbContext = new FluentModel(fromCodeConfiguration);
             //BackendConfiguration backend = new BackendConfiguration();
             //{
