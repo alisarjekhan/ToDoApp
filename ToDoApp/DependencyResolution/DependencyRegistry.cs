@@ -10,12 +10,7 @@ namespace ToDoApp.DependencyResolution
 
         public DependencyRegistry()
         {
-            Mapper.CreateMap<ToDoItem, ToDoItemDto>().AfterMap((src, des) =>
-            {
-                des.HasNote = !string.IsNullOrWhiteSpace(src.ToDoItemNote?.Note);
-            });
-
-            Mapper.CreateMap<ToDoItemDto, ToDoItem>();
+            AutoMapperMappings.Initialize();
 
             For<IToDoRepoService>().Use<ToDoDbService>();
         }
