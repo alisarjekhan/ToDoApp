@@ -1,5 +1,6 @@
 ﻿using StructureMap;
 using System.Web.Http;
+using System.Web.Http.ExceptionHandling;
 using ToDoApp.DependencyResolution;
 
 namespace ToDoApp
@@ -13,7 +14,9 @@ namespace ToDoApp
             //config.DependencyResolver = new StructureMapWebApiDependencyResolver(container);
 
             var container = new Container(c => c.AddRegistry<DependencyRegistry>());
-            config.DependencyResolver = new DependencyResolver(container); 
+            config.DependencyResolver = new DependencyResolver(container);
+
+            config.Services.Add(typeof(IExceptionLogger), new ElmahExceptionLogger());
 
             // Web API routes
             config.MapHttpAttributeRoutes();

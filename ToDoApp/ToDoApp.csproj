@@ -52,6 +52,9 @@
     <Reference Include="AutoMapper.Net4, Version=3.2.1.0, Culture=neutral, PublicKeyToken=be96cd2c38ef1005, processorArchitecture=MSIL">
       <HintPath>..\packages\AutoMapper.3.2.1\lib\net40\AutoMapper.Net4.dll</HintPath>
     </Reference>
+    <Reference Include="Elmah, Version=1.2.14706.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\elmah.corelibrary.1.2.2\lib\Elmah.dll</HintPath>
+    </Reference>
     <Reference Include="log4net, Version=1.2.13.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
       <HintPath>..\packages\log4net.2.0.3\lib\net40-full\log4net.dll</HintPath>
     </Reference>
@@ -149,6 +152,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="App_Readme\Elmah.txt" />
     <Content Include="Content\bootstrap-grid.css" />
     <Content Include="Content\bootstrap-grid.min.css" />
     <Content Include="Content\bootstrap-reboot.css" />
@@ -207,6 +211,7 @@
     <Compile Include="Controllers\ToDoItemsController.cs" />
     <Compile Include="DependencyResolution\DependencyRegistry.cs" />
     <Compile Include="DependencyResolution\DependencyResolver.cs" />
+    <Compile Include="ElmahExceptionLogger.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
